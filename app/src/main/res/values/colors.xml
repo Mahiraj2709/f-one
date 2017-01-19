@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#01A862</color>
+    <color name="colorPrimaryDark">#02844e</color>
+    <color name="colorAccent">#9E9E9E</color>
+    <color name="colorBrown">#666666</color>
+    <color name="colorOrange">#F19C01</color>
+    <color name="colorLineSeperator">#dcdcdc</color>
+    <color name="colorMapCircle">#24252525</color>
+    <color name="colorDateSelector">#80232323</color>
+    <color name="mapLineColor">#02b2fd</color>
+</resources>

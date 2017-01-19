@@ -1,0 +1,117 @@
+<resources>
+    <string name="app_name">FairRepair</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="dialog_action_ok">OK</string>
+    <string name="dialog_error_title">ERROR</string>
+    <string name="hint_email">Email ID</string>
+    <string name="submit">Submit</string>
+    <string name="alreadyhaevanaccount">Already have an account?</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">FORGOT PASSWORD</string>
+    <string name="hint_password">Password</string>
+    <string name="tv_forgot_password">Forgot Password?</string>
+    <string name="register_now">Register Now</string>
+    <string name="accept_t_and_s">By creating an account you agree to our</string>
+    <string name="terms_n_condition">Terms and Conditions.</string>
+    <string name="label_register_now">Register</string>
+    <string name="label_login">Login</string>
+    <string name="btn_register">REGISTER</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_phoneNo">Phone No</string>
+    <string name="hint_confirmPasswd">Confirm Password</string>
+    <string name="label_home">FAIR REPAIR</string>
+    <string name="tv_send_request">SEND REQUEST</string>
+    <string name="server_error">There is a problem with our system. We apologize for the inconvenience caused. Please try again later. If the problem persist, please contact at support@fairrepair.com.</string>
+    <string name="title_permissions">Permissions</string>
+    <string name="permission_not_accepted_access_location">Sorry, you can\'t use app without accepting location permission!</string>
+    <string name="title_my_profile">MY PROFILE</string>
+    <string name="title_service_history">SERVICE HISTORY</string>
+    <string name="title_reset_password">RESET PASSWORD</string>
+    <string name="title_support">SUPPORT</string>
+    <string name="title_login">LOGIN</string>
+    <string name="title_register">REGISTER</string>
+    <string name="title_forgot_password">FORGOT PASSWORD</string>
+    <string name="title_logout">LOGOUT</string>
+    <string name="btn_confirm">RESET</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, usu ex regione legendos. Eos illum interpretaris ut, cu maiorum omittantur mei. Has ei timeam volumus accumsan. Sed agam erant tamquam ex, cum ad illum essent, est noster posidonium ei. Nam no modus putant, quas quodsi erroribus te quo. Ea maiorum noluisse reformidans est, detracto lobortis cu pri, quis quidam ut vix.
+
+Cibo nemore vim ex, est ipsum officiis ex. Pro augue homero diceret id. Nec eu vidisse recusabo, vim cu graece sensibus, in numquam maiorum oportere est. Et nibh posse eam. Enim voluptatum nec ex.
+
+An sit quem tempor, quot aliquando inciderint ius cu, vix ei tempor aliquam platonem. Sea dicam omittam omittantur ut. Nam et cibo dicant habemus. Sea eu iriure laboramus conceptam.
+
+Vel no fugit denique, in pri wisi prompta impedit, ad quidam interesset persequeris est. Ne elit denique definitionem vix. Sanctus verterem nec et, eum at summo nullam semper, pro graecis adipisci an. Sea ei diceret intellegam, salutandi conclusionemque an pri, in per saperet dissentiunt.
+
+Ei sea natum praesent. Nec cu accusam tractatos, ex brute quaestio postulant qui. Paulo conceptam appellantur ei vis. Sea falli evertitur at, eum te doming civibus urbanitas. Est et wisi graeci equidem, ad est porro utamur euripidis. Est no convenire iudicabit, eu ius percipit qualisque necessitatibus.</string>
+    <string name="dialog_no">NO</string>
+    <string name="dialog_yes">YES</string>
+    <string name="logout_confirm">Are you sure to logout?</string>
+    <string name="logout">Logout</string>
+    <string name="truck_model">Truck model/year</string>
+    <string name="engine_manufacturer">Engine manufacturer</string>
+    <string name="vin">VIN#</string>
+    <string name="service_desc">Service Description</string>
+    <string name="service_time">When you want to be serviced?</string>
+    <string name="with_trailer">You with trailer?</string>
+    <string name="title_attention">Attention!</string>
+    <string name="msg_server_error">There is a problem with our system. We apologize for the inconvenience caused. Please try again later. If the problem persist, please contact at support@fairrepair.com.</string>
+
+    <string name="message_email_empty">Email cannot be empty.</string>
+    <string name="message_email_not_valid">Please enter valid email address.</string>
+    <string name="msg_invalid_name">Please enter valid name.</string>
+    <string name="msg_invalid_phone_no">Please enter valid phone number.</string>
+    <string name="valid_msg_empty_password">Please enter password.</string>
+    <string name="msg_password_lenght">Password length should be greater than 6.</string>
+    <string name="msg_empty_confirm_password">Please re-enter password.</string>
+    <string name="password_not_match">Password did not match.</string>
+    <string name="msg_accept_tnc">Please accept terms and conditions.</string>
+    <string name="no_connectin">No internet connection.</string>
+    <string name="msg_loading">please wait.....</string>
+    <string name="permission_not_accepted_read_phone_state" >Sorry, you can\'t use app without accepting phone state permission!</string>
+    <string name="btn_save">SAVE</string>
+    <string name="title_password_changed">Password Changed!</string>
+    <string name="msg_invalid_phone_no_length">Please enter phone no. with length 10!</string>
+    <string name="title_home">HOME</string>
+    <string name="title_service_history_detail">SERVICE HISTORY DETAIL</string>
+    <string name="hint__new_password">New Password</string>
+    <string name="hint_truck_make">Truck Make/Model</string>
+    <string name="hint_engine_manufacture">Engine manufacturer</string>
+    <string name="hint_vin">VIN#( optional)</string>
+    <string name="hint_with_trailer">You with trailer?</string>
+    <string name="rb_text_roadside_service">Roadside Service</string>
+    <string name="rb_text_shop_service">In Shop Service</string>
+    <string name="rb_text_towing_service">In Shop with Towing Service</string>
+    <string name="btn_submit">SUBMIT</string>
+    <string name="describe_needs">Describe your need</string>
+    <string name="msg_truck_make">Please enter truck make/model.</string>
+    <string name="msg_invalid_engine_manufacturer">Please enter engine manufacturer.</string>
+    <string name="valid_msg_empty_need">Please describe your need.</string>
+    <string name="msg_empty_with_trailer">Are you with trailer?</string>
+    <string name="title_requset_form">REQUEST FORM</string>
+    <string name="msg_select_service">Please select service type.</string>
+    <string name="no_services">Services are not available.</string>
+    <string name="text_request_sent">Your request has been sent and will be answered by the available Mechanics.</string>
+    <string name="dialog_view_details">VIEW DETAILS</string>
+    <string name="title_company_information">COMPANY INFORMATION</string>
+    <string name="btn_accept_offer">ACCEPT OFFER</string>
+    <string name="title_success">Success</string>
+    <string name="title_mechanic_on_the_way">MECHANIC ON THE WAY</string>
+    <string name="btn_call_mech">CALL MECHANIC</string>
+    <string name="btn_cancel_request">CANCEL REQUEST</string>
+    <string name="tv_cancel_request">CANCEL REQUEST</string>
+    <string name="rb_mech_reach_late">Mechanic reach very late.</string>
+    <string name="rb_other">Other reason.</string>
+    <string name="rb_mech_change_mind">Changes my mind.</string>
+    <string name="rb_mech_request_cancel">Mechanic request to cancel.</string>
+    <string name="rb_mech_no_contact">No contact with mechanic.</string>
+    <string name="title_your_bill">YOUR BILL</string>
+    <string name="btn_pay_now">PAY NOW</string>
+    <string name="tv_share_experience">Please share your experience with us, it will help us provide better service.</string>
+    <string name="tv_how_was_service">HOW WAS YOUR SERVICE?</string>
+    <string name="tv_write_review">WRITE REVIEW</string>
+    <string name="title_rate_your_mech">RATE YOUR MECHANIC</string>
+    <string name="title_my_home">HOME</string>
+</resources>

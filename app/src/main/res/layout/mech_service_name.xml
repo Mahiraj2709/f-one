@@ -1,0 +1,19 @@
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorLineSeperator"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:src="@drawable/ic_bullets"
+        android:layout_width="36dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_height="36dp" />
+    <TextView
+        android:id="@+id/tv_serviceName"
+        android:text="sfsffdsfsdf"
+        android:layout_width="wrap_content"
+        android:textColor="@color/colorBrown"
+        android:layout_height="wrap_content" />
+</LinearLayout>
