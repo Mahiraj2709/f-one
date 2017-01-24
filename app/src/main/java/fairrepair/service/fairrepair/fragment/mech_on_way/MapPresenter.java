@@ -14,5 +14,10 @@ public interface MapPresenter {
     void onMapReady();
     void callMechanic();
 
+    void connectToGoogleApiClient();
+    void onResume();
+    void onStop();
+    void onPause();
+
     void cancelRequest();
 }

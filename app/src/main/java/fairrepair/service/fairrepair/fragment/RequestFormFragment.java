@@ -44,6 +44,7 @@ public class RequestFormFragment extends Fragment {
     @BindView(R.id.et_trailer) EditText et_trailer;
     @BindView(R.id.rg_services) RadioGroup rg_services;
     private boolean isServiceSelected = false;
+    private RequestSentCallback requestSentCallback = null;
     private String serviceProvider = "";
     public static RequestFormFragment newInstance(String args,String locationName) {
         RequestFormFragment fragment = new RequestFormFragment();
@@ -53,7 +54,12 @@ public class RequestFormFragment extends Fragment {
         fragment.setArguments(data);
         return fragment;
     }
-
+    public interface RequestSentCallback{
+        void requestSentSeccessfull(int time);
+    }
+    public void setRequestSentCallback(RequestSentCallback callback) {
+        requestSentCallback = callback;
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -128,6 +134,10 @@ public class RequestFormFragment extends Fragment {
                     trans.remove(RequestFormFragment.this);
                     trans.commit();
                     manager.popBackStack();
+                    if (requestSentCallback != null) {
+                        requestSentCallback.requestSentSeccessfull(120);
+                    }
+
 
                 }
             });
@@ -182,4 +192,5 @@ public class RequestFormFragment extends Fragment {
         et_describeNeed.setText("SPECIAL NEEDS");
         et_trailer.setText("YES");
     }
+
 }

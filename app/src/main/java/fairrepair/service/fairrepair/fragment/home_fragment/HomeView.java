@@ -34,4 +34,9 @@ public interface HomeView {
     void showOnlineMechanics(List<Mechanic> onlineManics);
     void showAcceptedMechanics(AllMechanic allMechanic);
     void setServices(List<Service> serviceList);
+
+    void showTimer(int time);
+
+    void hideSentRequestTime();
+    void updateSentRequestTime(int time);
 }

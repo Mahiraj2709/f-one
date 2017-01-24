@@ -1,6 +1,7 @@
 package fairrepair.service.fairrepair.fragment.home_fragment;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,12 +17,15 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -37,6 +41,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.squareup.otto.Subscribe;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +52,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import fairrepair.service.fairrepair.FairRepairApplication;
 import fairrepair.service.fairrepair.Globals;
 import fairrepair.service.fairrepair.R;
 import fairrepair.service.fairrepair.adapter.AvailableServicesAdapter;
@@ -55,6 +64,8 @@ import fairrepair.service.fairrepair.utils.ApplicationMetadata;
 import fairrepair.service.fairrepair.utils.DialogFactory;
 import fairrepair.service.fairrepair.utils.LocationUtils;
 
+import static android.R.attr.type;
+import static android.R.id.message;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
@@ -63,7 +74,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by admin on 11/22/2016.
  */
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeView, GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveStartedListener,GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
+public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeView, GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
     private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private static final int REQUEST_CHECK_SETTINGS = 11;
     private static final int REQUEST_PERMISSION_ACCESS_LOCATION = 12;
@@ -85,10 +96,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
     ProgressBar pb_addressLoading;
     @BindView(R.id.rv_servicesView)
     RecyclerView rv_servicesView;
+    @BindView(R.id.circleProgress)
+    FrameLayout circleProgress;
+    @BindView(R.id.ll_searchLocation)
+    LinearLayout ll_searchLocation;
+    @BindView(R.id.donut_progress)
+    DonutProgress donut_progress;
+    @BindView(R.id.tv_totalTime)
+    TextView tv_totalTime;
     private AvailableServicesAdapter mServiceAdapter;
     private MainActivity activity;
 
     private int mapType = ApplicationMetadata.SHOW_ALL_MECH;
+
     public static HomeFragment newInstance(int args) {
         HomeFragment fragment = new HomeFragment();
         Bundle data = new Bundle();
@@ -110,6 +130,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null)
                 parent.removeView(view);
+        } else {
+            FairRepairApplication.getBus().register(this);
         }
         try {
             view = inflater.inflate(R.layout.content_main, container, false);
@@ -117,8 +139,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
     /* map is already there, just return view as it is */
         }
         ButterKnife.bind(this, view);
-
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+
+        donut_progress.setUnfinishedStrokeColor(getResources().getColor(R.color.colorPrimary));
+        donut_progress.setFinishedStrokeColor(getResources().getColor(R.color.colorLineSeperator));
+        donut_progress.setUnfinishedStrokeWidth(10.0f);
+        donut_progress.setFinishedStrokeWidth(10.0f);
+        donut_progress.setTextColor(getResources().getColor(R.color.lightGrey));
+        tv_totalTime.setText("60");
+
         rv_servicesView.setLayoutManager(mLayoutManager);
         rv_servicesView.setItemAnimator(new DefaultItemAnimator());
         presenter = new HomePresenterImp(this, this, getContext());
@@ -165,7 +194,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
                 };
 
                 int starCount = Integer.parseInt(markerValues[0]);
-                for(int i = 0;i<starCount ; i++) {
+                for (int i = 0; i < starCount; i++) {
                     stars[i].setImageResource(R.drawable.ic_star_yellow);
                 }
                 // Getting reference to the TextView to set longitude
@@ -348,6 +377,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
         LocationUtils locationUtils = new LocationUtils(getActivity());
         locationUtils.showSettingDialog();
 
+        receiveNotification(testAcceptedUser());
         String notificationData = getActivity().getIntent().getStringExtra(ApplicationMetadata.NOTIFICATION_DATA);
         int notificationType = getActivity().getIntent().getIntExtra(ApplicationMetadata.NOTIFICATION_TYPE, -1);
         if (notificationData != null && notificationType == ApplicationMetadata.NOTIFICATION_REQ_ACCEPTED) {
@@ -403,7 +433,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
                 try {
                     LatLng latLng = new LatLng(Double.parseDouble(mech.getLat()), Double.parseDouble(mech.getLng()));
                     MarkerOptions marker = new MarkerOptions().position(latLng).title(
-                            (mech.getAvgRating()!= null ? mech.getAvgRating():"0")+ ":" + mech.getHourlyServiceCharges());
+                            (mech.getAvgRating() != null ? mech.getAvgRating() : "0") + ":" + mech.getHourlyServiceCharges());
                     // Changing marker icon
                     marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_icon));
                     map.addMarker(marker);
@@ -428,7 +458,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
             latLngs.add(mechLatLng);
             if (map != null) {
                 //add inner circle
-                map.addMarker(new MarkerOptions().position(mechLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_icon)).title(((mech.avg_rate!= null) ? mech.avg_rate:"0")+":" + mech.offer_price +":"+mech.app_provider_id));
+                map.addMarker(new MarkerOptions().position(mechLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_icon)).title(((mech.avg_rate != null) ? mech.avg_rate : "0") + ":" + mech.offer_price + ":" + mech.app_provider_id +":"+allMechanic.request_id));
                 map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
@@ -471,6 +501,37 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
     }
 
     @Override
+    public void showTimer(int time) {
+        ObjectAnimator anim = ObjectAnimator.ofInt(donut_progress, "progress", 0, time);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setDuration(time * 1000);
+        anim.start();
+        ll_searchLocation.setVisibility(View.GONE);
+        circleProgress.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideSentRequestTime() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ll_searchLocation.setVisibility(View.VISIBLE);
+                circleProgress.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    @Override
+    public void updateSentRequestTime(final int time) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tv_totalTime.setText(time + "");
+            }
+        });
+    }
+
+    @Override
     public void onCameraIdle() {
         presenter.onCameraIdle(map.getCameraPosition().target);
     }
@@ -500,5 +561,35 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
     @Override
     public void onInfoWindowClick(Marker marker) {
         presenter.infoWindowClicked(marker);
+    }
+
+    //receive notification from the customer
+    @Subscribe
+    public void receiveNotification(AllMechanic allMechanic) {
+        //request has been accepted
+        DialogFactory.createRequestAcceptedDialog(getContext(), allMechanic.message);
+        presenter.setRequestAcceptedMech(allMechanic);
+        mapType = ApplicationMetadata.SHOW_MECH_REQUEST;
+        //presenter.setMapType(mapType);
+    }
+
+    private AllMechanic testAcceptedUser() {
+        AllMechanic allMechanic = new AllMechanic();
+        allMechanic.total_offer = "1";
+        allMechanic.type = "2";
+        allMechanic.request_id = "3";
+        allMechanic.message = "We found 1 offers for your request";
+
+        List<AllMechanic.Mechanic> mechanicList = new ArrayList<>();
+        AllMechanic.Mechanic mechanic = new AllMechanic().new Mechanic();
+        mechanic.app_provider_id = "1";
+        mechanic.latitude = "28.5410496";
+        mechanic.avg_rate = "4";
+        mechanic.offer_price = "55.00";
+        mechanic.longitude = "77.3985685";
+        mechanicList.add(mechanic);
+
+        allMechanic.mechanicList = mechanicList;
+        return allMechanic;
     }
 }

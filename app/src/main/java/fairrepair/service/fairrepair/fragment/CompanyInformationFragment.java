@@ -61,10 +61,11 @@ public class CompanyInformationFragment extends Fragment {
     private String mechId;
     private MechanicDetail mechanicDetail = null;
     private AllMechanic.Mechanic mechanic = null;
-    public static CompanyInformationFragment newInstance(String args, AllMechanic.Mechanic mechanic) {
+    public static CompanyInformationFragment newInstance(String args, AllMechanic.Mechanic mechanic,String request_id) {
         CompanyInformationFragment fragment = new CompanyInformationFragment();
         Bundle data = new Bundle();
         data.putString("args",args);
+        data.putString("request_id",request_id);
         data.putSerializable("mechanic",mechanic);
         fragment.setArguments(data);
         return fragment;
@@ -154,7 +155,7 @@ public class CompanyInformationFragment extends Fragment {
         requestParams.put(ApplicationMetadata.SESSION_TOKEN, prefsHelper.getPref(ApplicationMetadata.SESSION_TOKEN, ""));
         requestParams.put(ApplicationMetadata.LANGUAGE, prefsHelper.getPref(ApplicationMetadata.APP_LANGUAGE, ""));
         requestParams.put(ApplicationMetadata.APP_PROVIDER_ID, mechId); // MECH ID
-        requestParams.put(ApplicationMetadata.REQUEST_ID, prefsHelper.getPref(ApplicationMetadata.USER_ID,"")); // CUSTOMER ID
+        requestParams.put(ApplicationMetadata.REQUEST_ID, getArguments().getString("request_id")); // CUSTOMER ID
         requestParams.put(ApplicationMetadata.OFFER_PRICE, mechanic.offer_price);
         if (Globals.getUserLatLng() == null) {
             return;

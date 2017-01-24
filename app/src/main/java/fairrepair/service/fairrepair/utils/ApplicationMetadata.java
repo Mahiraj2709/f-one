@@ -62,4 +62,5 @@ public interface ApplicationMetadata {
 
     int NOTIFICATION_REQ_COMPLETED = 5;
     String NOTIFICATION_TYPE = "notification_type";
+    String CUSTOMER_ID = "customer_id";
 }

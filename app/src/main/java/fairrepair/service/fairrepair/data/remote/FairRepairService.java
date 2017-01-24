@@ -92,6 +92,10 @@ public interface FairRepairService {
     @FormUrlEncoded
     Call<SignInResponse> rateMechanic(@FieldMap Map<String, String> requestMap);
 
+    @POST("updatelatlong")
+    @FormUrlEncoded
+    Call<SignInResponse> updateLatLng(@FieldMap Map<String, String> requestMap);
+
     /********
      * Factory class that sets up a new ribot services
      *******/

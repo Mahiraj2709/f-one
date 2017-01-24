@@ -15,12 +15,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.squareup.otto.Subscribe;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import fairrepair.service.fairrepair.FairRepairApplication;
 import fairrepair.service.fairrepair.R;
 import fairrepair.service.fairrepair.data.DataManager;
 import fairrepair.service.fairrepair.data.local.PrefsHelper;
@@ -41,6 +43,7 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FairRepairApplication.getBus().register(this);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -215,5 +218,21 @@ public class MainActivity extends BaseActivity
         } else {
             return currentFragment;
         }
+    }
+
+    @Subscribe
+    public void receiveNotification(String paylaod) {
+        //request has been accepted
+        /*try {
+            JSONObject paylaodJson = new JSONObject(paylaod);
+            if (paylaodJson.has("type")) {
+                if (paylaodJson.getString("type").equals(ApplicationMetadata.NOTIFICATION_REQ_ACCEPTED)) {
+                    //request has been accepted by the user
+                    DialogFactory.createRequestAcceptedDialog(MainActivity.this,paylaodJson.getString("message"));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }*/
     }
 }

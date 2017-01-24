@@ -56,15 +56,15 @@ public class DialogFactory {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
-                .setNegativeButton(R.string.dialog_no,null)
+                .setNegativeButton(R.string.dialog_no, null)
                 .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         DataManager dataManager = new DataManager(context);
                         PrefsHelper prefsHelper = new PrefsHelper(context);
-                        Map<String,String> requestParams = new HashMap<>();
-                        requestParams.put(ApplicationMetadata.SESSION_TOKEN,(String)prefsHelper.getPref(ApplicationMetadata.SESSION_TOKEN));
-                        requestParams.put("language",(String)prefsHelper.getPref(ApplicationMetadata.APP_LANGUAGE));
+                        Map<String, String> requestParams = new HashMap<>();
+                        requestParams.put(ApplicationMetadata.SESSION_TOKEN, (String) prefsHelper.getPref(ApplicationMetadata.SESSION_TOKEN));
+                        requestParams.put("language", (String) prefsHelper.getPref(ApplicationMetadata.APP_LANGUAGE));
                         dataManager.logout(requestParams);
                     }
                 });
@@ -72,8 +72,8 @@ public class DialogFactory {
     }
 
     public static Dialog createLogoutDialog(Context context,
-                                                   @StringRes int titleResource,
-                                                   @StringRes int messageResource) {
+                                            @StringRes int titleResource,
+                                            @StringRes int messageResource) {
 
         return createLogoutDialog(context,
                 context.getString(titleResource),
@@ -89,7 +89,7 @@ public class DialogFactory {
 
         alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                ((MainActivity)context).finish();
+                ((MainActivity) context).finish();
             }
         });
 
@@ -107,7 +107,7 @@ public class DialogFactory {
 
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
 // ...Irrelevant code for customizing the buttons and title
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.request_sent_dialog, null);
         dialogBuilder.setView(dialogView);
         TextView tv_message = (TextView) dialogView.findViewById(R.id.tv_message);
@@ -133,17 +133,17 @@ public class DialogFactory {
                 .setTitle(R.string.app_name)
                 .setMessage("Coming Soon.");
 
-        alertDialog.setPositiveButton("OK",null );
+        alertDialog.setPositiveButton("OK", null);
 
 
         alertDialog.show();
     }
 
-    public static void createRequsestSentDialog(Context context, String message){
+    public static void createRequsestSentDialog(Context context, String message) {
 
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
 // ...Irrelevant code for customizing the buttons and title
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.request_sent_dialog, null);
         dialogBuilder.setView(dialogView);
         final AlertDialog alertDialog = dialogBuilder.create();
@@ -158,11 +158,11 @@ public class DialogFactory {
         alertDialog.show();
     }
 
-    public static void createOffersFoundDialog(Context context, String message){
+    public static void createOffersFoundDialog(Context context, String message) {
 
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
 // ...Irrelevant code for customizing the buttons and title
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.offers_found_dialog, null);
         dialogBuilder.setView(dialogView);
         final AlertDialog alertDialog = dialogBuilder.create();
@@ -180,7 +180,7 @@ public class DialogFactory {
     public static void createOffeAcceptedDialog(final Context context, String message) {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
 // ...Irrelevant code for customizing the buttons and title
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.request_sent_dialog, null);
         dialogBuilder.setView(dialogView);
         TextView tv_message = (TextView) dialogView.findViewById(R.id.tv_message);
@@ -194,6 +194,26 @@ public class DialogFactory {
 
             }
         });
+
+        alertDialog.show();
+    }
+
+    public static void createRequestAcceptedDialog(Context context, String message) {
+
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        View view = ((Activity) context).getLayoutInflater().inflate(R.layout.notification_dialog, null);
+        TextView tv_notificationMsg = (TextView) view.findViewById(R.id.tv_notificationMsg);
+        tv_notificationMsg.setText(message);
+        Button button = (Button) view.findViewById(R.id.btn_dialog_ok);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setView(view);
 
         alertDialog.show();
     }

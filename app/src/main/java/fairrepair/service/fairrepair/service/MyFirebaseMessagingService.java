@@ -4,15 +4,18 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 
 import fairrepair.service.fairrepair.FairRepairApplication;
 import fairrepair.service.fairrepair.R;
 import fairrepair.service.fairrepair.app.MainActivity;
-import fairrepair.service.fairrepair.app.NotificationDialogActivity;
+import fairrepair.service.fairrepair.model.AllMechanic;
 import fairrepair.service.fairrepair.utils.ApplicationMetadata;
 import fairrepair.service.fairrepair.utils.NotificationUtils;
 
@@ -22,6 +25,7 @@ import fairrepair.service.fairrepair.utils.NotificationUtils;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
+    String payLoad = "";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -42,40 +46,44 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         if (remoteMessage.getData().containsKey("type")) {
-            String payLoad = "";
-            int notificationType = Integer.parseInt(remoteMessage.getData().get("type"));
+            final int notificationType = Integer.parseInt(remoteMessage.getData().get("type"));
             payLoad = new NotificationUtils().getData(remoteMessage.getData());
             Intent intent = null;
 
             if (FairRepairApplication.isVisible) {
-                intent = new Intent(getApplicationContext(), NotificationDialogActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Log.i(TAG, notificationType + "");
+                Handler mHandler = new Handler(Looper.getMainLooper());
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (notificationType == ApplicationMetadata.NOTIFICATION_REQ_ACCEPTED) {
+                            AllMechanic allMechanic = new Gson().fromJson(payLoad, AllMechanic.class);
+                            FairRepairApplication.getBus().post(allMechanic);
+                        }
+                    }
+                });
             } else {
                 intent = new Intent(this, MainActivity.class);
-            }
-            switch (notificationType) {
+                switch (notificationType) {
                 /*case ApplicationMetadata.NOTIFICATION_NEW_OFFER:
                     intent.putExtra(ApplicationMetadata.NOTIFICATION_DATA, payLoad);
                     intent.putExtra(ApplicationMetadata.NOTIFICATION_TYPE, notificationType);
                     break;*/
-                case ApplicationMetadata.NOTIFICATION_REQ_ACCEPTED:
-                    intent.putExtra(ApplicationMetadata.NOTIFICATION_DATA, payLoad);
-                    intent.putExtra(ApplicationMetadata.NOTIFICATION_TYPE, notificationType);
-                    break;
-                case ApplicationMetadata.NOTIFICATION_REQ_COMPLETED:
-                    break;
+                    case ApplicationMetadata.NOTIFICATION_REQ_ACCEPTED:
+                        intent.putExtra(ApplicationMetadata.NOTIFICATION_DATA, payLoad);
+                        intent.putExtra(ApplicationMetadata.NOTIFICATION_TYPE, notificationType);
+                        break;
+                    case ApplicationMetadata.NOTIFICATION_REQ_COMPLETED:
+                        break;
                 /*case ApplicationMetadata.NOTIFICATION_SEND_REQ:
                     intent.putExtra(ApplicationMetadata.NOTIFICATION_DATA, payLoad);
                     intent.putExtra(ApplicationMetadata.NOTIFICATION_TYPE, notificationType);
                     break;*/
-                default:
+                    default:
 
-            }
+                }
 
-            //start activity
-            if (FairRepairApplication.isVisible) {
-                startActivity(intent);
-            } else {
+
                 // use System.currentTimeMillis() to have a unique ID for the pending intent
                 PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
 
@@ -95,8 +103,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 notificationManager.notify(0, n);
             }
-        } else {
-            //notification without type
+
+
         }
     }
 }

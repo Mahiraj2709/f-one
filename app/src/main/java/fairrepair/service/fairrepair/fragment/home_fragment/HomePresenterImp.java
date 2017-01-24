@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import fairrepair.service.fairrepair.Globals;
 import fairrepair.service.fairrepair.R;
@@ -49,8 +51,8 @@ import static android.R.attr.id;
  * Created by admin on 1/3/2017.
  */
 
-public class HomePresenterImp implements HomePresenter,LocationListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+public class HomePresenterImp implements HomePresenter, LocationListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, RequestFormFragment.RequestSentCallback {
     private static final String TAG = HomePresenterImp.class.getSimpleName();
     private static final long INTERVAL = 1000 * 60 * 1; //1 minute
     private static final long FASTEST_INTERVAL = 1000 * 60 * 1; // 1 minute
@@ -61,18 +63,21 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
     private HomeView view = null;
     private Fragment homeFragment = null;
     private Context context = null;
-    private int mapType = - 1;
+    private int mapType = -1;
     private Place currentPlace = null;
     private PrefsHelper prefsHelper = null;
     private DataManager dataManager = null;
     private List<Service> serviceList = new ArrayList<>();
     private List<Mechanic> onlineMechList = new ArrayList<>();
-    private LatLng cameraLatLng = new LatLng(0.0f,0.0f);
+    private LatLng cameraLatLng = new LatLng(0.0f, 0.0f);
     private boolean setMapForFirstTime = false;
     private boolean cameraMovedManually = true;
-    private String selectedServiceId = "0";
+    private String selectedServiceId = "1";
     private String currentLocationName = null;
     private AllMechanic allMechanic = null;
+    private Timer sendRequstTime = null;
+    private int sentReqeustWaitTime = 0;
+
     public HomePresenterImp(HomeView view, Fragment homeFragment, Context context) {
         this.view = view;
 
@@ -99,9 +104,9 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
         this.mapType = mapType;
         if (this.mapType == ApplicationMetadata.SHOW_ALL_MECH) {
             view.enableSendRequest();
-            Log.i(TAG,"inside show all mech");
-        } else if(this.mapType == ApplicationMetadata.SHOW_MECH_REQUEST){
-            Log.i(TAG,"inside show accepted mech");
+            Log.i(TAG, "inside show all mech");
+        } else if (this.mapType == ApplicationMetadata.SHOW_MECH_REQUEST) {
+            Log.i(TAG, "inside show accepted mech");
             view.disableSendRequest();
             if (allMechanic != null) {
                 view.showAcceptedMechanics(allMechanic);
@@ -110,7 +115,7 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
                 Toast.makeText(context, "All request accepted mech is null", Toast.LENGTH_SHORT).show();
             }
         }
-        Log.i(TAG,"outside");
+        Log.i(TAG, "outside");
     }
 
     @Override
@@ -136,21 +141,24 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
     public void enableCurrentLocation() {
         view.enableMapCurrentLocation();
     }
+
     @Override
     public void moveToCurrentLocation() {
         if (mLocation != null) {
-            view.setCurrentLocation(new LatLng(mLocation.getLatitude(),mLocation.getLongitude()));
+            view.setCurrentLocation(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()));
         }
     }
+
     @Override
     public void openSendRequest() {
 
         if (currentLocationName == null) {
-            DialogFactory.createSimpleOkErrorDialog(context,"Loading address!").show();
+            DialogFactory.createSimpleOkErrorDialog(context, "Loading address!").show();
             return;
         }
         if (serviceList != null && serviceList.size() > 0) {
             RequestFormFragment fragment = RequestFormFragment.newInstance(selectedServiceId, currentLocationName);
+            fragment.setRequestSentCallback(this);
             ((MainActivity) context).addFragmentToStack(fragment, "request_form");
         } else {
             DialogFactory.createSimpleOkErrorDialog(context, R.string.title_attention, R.string.no_services);
@@ -204,8 +212,8 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
         if (Globals.getUserLatLng() == null) {
             return;
         }
-        requestParams.put(ApplicationMetadata.LATITUDE, Globals.getUserLatLng().latitude +"");
-        requestParams.put(ApplicationMetadata.LONGITUDE, Globals.getUserLatLng().longitude +"");
+        requestParams.put(ApplicationMetadata.LATITUDE, Globals.getUserLatLng().latitude + "");
+        requestParams.put(ApplicationMetadata.LONGITUDE, Globals.getUserLatLng().longitude + "");
 
         dataManager.setOnlineMechCallback(new DataManager.OnOnlineMechCallback() {
 
@@ -258,7 +266,7 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
         //move map to the current location
         //moveToLatLng();
         if (!setMapForFirstTime) {
-            view.setCurrentLocation(new LatLng(location.getLatitude(),location.getLongitude()));
+            view.setCurrentLocation(new LatLng(location.getLatitude(), location.getLongitude()));
             setMapForFirstTime = true;
         }
     }
@@ -290,6 +298,7 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
 
         mGoogleApiClient.connect();
     }
+
     private void startLocationUpdates() {
         PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
@@ -303,6 +312,7 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
                     mGoogleApiClient, this);
         Log.d(TAG, "Location update stopped .......................");
     }
+
     @Override
     public void connectToGoogleApiClient() {
         mGoogleApiClient.connect();
@@ -332,7 +342,8 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
     public void infoWindowClicked(Marker marker) {
         if (mapType == ApplicationMetadata.SHOW_MECH_REQUEST) {
             String[] markerValues = marker.getTitle().split(":");
-            Fragment fragment = CompanyInformationFragment.newInstance(markerValues[2],getMechById(markerValues[2]));
+            //3 is request_id
+            Fragment fragment = CompanyInformationFragment.newInstance(markerValues[2], getMechById(markerValues[2]),markerValues[3]);
             ((MainActivity) context).addFragmentToStack(fragment, "company_information");
         }
     }
@@ -362,14 +373,14 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
                     Log.i("ADDRESS", address + "---" + state + "-----" + city + "=====" + pincode);
                     //addressFinal = address + ","+state;
 //                    mapOperationListener.changeAddress(address + ","+ state);
-                    view.changeAddress(address + ", "+ state);
-                    currentLocationName = address +", "+state;
+                    view.changeAddress(address + ", " + state);
+                    currentLocationName = address + ", " + state;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (IndexOutOfBoundsException es) {
-                    Log.e(TAG,es.toString());
-                }finally {
-                 view.hideAddressLoadingProgressBar();
+                    Log.e(TAG, es.toString());
+                } finally {
+                    view.hideAddressLoadingProgressBar();
                 }
             }
         }).start();
@@ -379,19 +390,19 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
     //test data for the notification
     private AllMechanic testData() {
         AllMechanic allMechanic = new AllMechanic();
-        allMechanic.total_offer = 10+"";
-        allMechanic.request_id= 7+"";
-        allMechanic.type = 2+"";
+        allMechanic.total_offer = 10 + "";
+        allMechanic.request_id = 7 + "";
+        allMechanic.type = 2 + "";
         allMechanic.message = "We found 10 offers for your request";
         allMechanic.mechanicList = new ArrayList<>();
-        for(int i = 0; i< 10; i++) {
+        for (int i = 0; i < 10; i++) {
             AllMechanic.Mechanic singleMech = new AllMechanic().new Mechanic();
-            singleMech.app_provider_id = i+"";
-            singleMech.avg_rate = (i/2)+"";
-            singleMech.offer_price = (i)+""+i;
-            singleMech.offer_id = (i)+"";
-            singleMech.latitude = "28.54"+i;
-            singleMech.longitude = "77.39"+i;
+            singleMech.app_provider_id = i + "";
+            singleMech.avg_rate = (i / 2) + "";
+            singleMech.offer_price = (i) + "" + i;
+            singleMech.offer_id = (i) + "";
+            singleMech.latitude = "28.54" + i;
+            singleMech.longitude = "77.39" + i;
             allMechanic.mechanicList.add(singleMech);
         }
         return allMechanic;
@@ -399,7 +410,7 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
 
     private AllMechanic.Mechanic getMechById(String mechId) {
         AllMechanic.Mechanic mechanic = new AllMechanic().new Mechanic();
-        for (AllMechanic.Mechanic mech: allMechanic.mechanicList) {
+        for (AllMechanic.Mechanic mech : allMechanic.mechanicList) {
             if (mech.app_provider_id.equals(mechId)) {
                 mechanic = mech;
                 return mechanic;
@@ -407,4 +418,32 @@ public class HomePresenterImp implements HomePresenter,LocationListener, GoogleA
         }
         return mechanic;
     }
+
+
+    @Override
+    public void requestSentSeccessfull(int time) {
+        //request has been send and update time
+        Toast.makeText(context, "Start time for 3 minutes", Toast.LENGTH_SHORT).show();
+        view.showTimer(time);
+        view.disableSendRequest();
+        sentReqeustWaitTime = time;
+        setTimerForSendRequest();
+    }
+
+    private void setTimerForSendRequest() {
+        sendRequstTime = new Timer();
+        sendRequstTime.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                sentReqeustWaitTime -= 1;
+                view.updateSentRequestTime(sentReqeustWaitTime);
+                if (sentReqeustWaitTime == 0) {
+                    view.hideSentRequestTime();
+                    view.enableSendRequest();
+                    sendRequstTime.cancel();
+                }
+            }
+        }, 0, 2 * 1000);
+    }
 }
+

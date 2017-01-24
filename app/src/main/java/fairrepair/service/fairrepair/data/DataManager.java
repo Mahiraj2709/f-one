@@ -44,10 +44,19 @@ public class DataManager {
     private Context mContext;
     private RequestCallback mCallback = null;
     private OnOnlineMechCallback onlineMechCallback = null;
+    private LocationUpdateCallback mLocationUpdateCallback = null;
     public DataManager(Context context) {
         mContext = context;
         mApiService = FairRepairService.Factory.makeFairRepairService(context);
         prefsHelper = new PrefsHelper(context);
+    }
+
+    public interface LocationUpdateCallback{
+//        void locationReceived(CustomerLocation location);
+        void locationReceived();
+    }
+    public void setmLocationUpdateCallback(LocationUpdateCallback callback) {
+        this.mLocationUpdateCallback = callback;
     }
 
     public interface RequestCallback{
@@ -458,9 +467,6 @@ public class DataManager {
             DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.no_connectin).show();
             return;
         }
-        final ProgressDialog progressDialog = new ProgressDialog(mContext);
-        progressDialog.setMessage(mContext.getString(R.string.msg_loading));
-        progressDialog.show();
         Call<SignInResponse> call = mApiService.getMechByServiceType(requestMap);
         call.enqueue(new Callback<SignInResponse>() {
             @Override
@@ -472,16 +478,13 @@ public class DataManager {
                     onlineMechCallback.onlineMechanics(mechanicList);
 
                 } else {
-                    progressDialog.dismiss();
                     DialogFactory.createSimpleOkErrorDialog(mContext, response.body().getResponseMsg()).show();
                 }
-                progressDialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<SignInResponse> call, Throwable t) {
                 // Log error here since request failed
-                progressDialog.dismiss();
                 Log.e(TAG, t.toString());
                 DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.msg_server_error).show();
             }
@@ -503,8 +506,8 @@ public class DataManager {
             public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
                 int status = response.body().getResponseStatus();
                 if (status == ApplicationMetadata.SUCCESS_RESPONSE_STATUS) {
-                    DialogFactory.createSimpleOkSuccessDialog(mContext,R.string.title_success, response.body().getResponseMsg()).show();
                     mCallback.Data(new Object());
+                    DialogFactory.createSimpleOkSuccessDialog(mContext,R.string.title_success, response.body().getResponseMsg()).show();
                 } else {
                     progressDialog.dismiss();
                     DialogFactory.createSimpleOkErrorDialog(mContext, response.body().getResponseMsg()).show();
@@ -650,6 +653,32 @@ public class DataManager {
             public void onFailure(Call<SignInResponse> call, Throwable t) {
                 // Log error here since request failed
                 progressDialog.dismiss();
+                Log.e(TAG, t.toString());
+                DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.msg_server_error).show();
+            }
+        });
+    }
+
+    // Cancel mechanic request
+    public void updateLatLng(Map<String, String> requestMap) {
+        if (!NetworkUtil.isNetworkConnected(mContext)) {
+            DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.no_connectin).show();
+            return;
+        }
+        Call<SignInResponse> call = mApiService.updateLatLng(requestMap);
+        call.enqueue(new Callback<SignInResponse>() {
+            @Override
+            public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
+                int status = response.body().getResponseStatus();
+                if (status == ApplicationMetadata.SUCCESS_RESPONSE_STATUS) {
+                    mLocationUpdateCallback.locationReceived();
+                } else {
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SignInResponse> call, Throwable t) {
+                // Log error here since request failed
                 Log.e(TAG, t.toString());
                 DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.msg_server_error).show();
             }
