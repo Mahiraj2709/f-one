@@ -4,6 +4,8 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
+    android:clickable="true"
+    android:background="@android:color/white"
     android:padding="16dp"
     android:layout_height="match_parent">
     <de.hdodenhof.circleimageview.CircleImageView

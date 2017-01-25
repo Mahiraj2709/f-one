@@ -1,7 +1,6 @@
 package fairrepair.service.fairrepair.fragment.mech_on_way;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +22,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.squareup.otto.Subscribe;
 
 import org.json.JSONObject;
 
@@ -45,6 +45,7 @@ import fairrepair.service.fairrepair.R;
 import fairrepair.service.fairrepair.app.MainActivity;
 import fairrepair.service.fairrepair.data.model.MechanicDetail;
 import fairrepair.service.fairrepair.helper.DirectionsJSONParser;
+import fairrepair.service.fairrepair.model.NotificationData;
 import fairrepair.service.fairrepair.utils.ApplicationMetadata;
 import fairrepair.service.fairrepair.utils.LocationUtils;
 
@@ -64,10 +65,11 @@ public class MechOnTheWayFragment extends Fragment implements OnMapReadyCallback
     private GoogleMap map;
     private MapPresenter presenter;
 
-    public static MechOnTheWayFragment newInstance(int args,MechanicDetail mechDetails) {
+    public static MechOnTheWayFragment newInstance(int args,MechanicDetail mechDetails,Bundle mechData) {
         MechOnTheWayFragment fragment = new MechOnTheWayFragment();
         Bundle data = new Bundle();
         data.putInt("args",args);
+        data.putBundle("mech_data",mechData);
         data.putSerializable(MECH_DETAIL,mechDetails);
         fragment.setArguments(data);
         return fragment;
@@ -88,6 +90,7 @@ public class MechOnTheWayFragment extends Fragment implements OnMapReadyCallback
         FairRepairApplication.getBus().register(this);
         presenter = new MapPresenterImp(this, getActivity(), getContext());
         presenter.setMechanicDetail((MechanicDetail) getArguments().getSerializable(MECH_DETAIL));
+        presenter.setBundleData(getArguments().getBundle("mech_data"));
         return view;
     }
 
@@ -256,4 +259,13 @@ public class MechOnTheWayFragment extends Fragment implements OnMapReadyCallback
         }
     }
 
+    //receive notification from the mechanic
+    @Subscribe
+    public void getNotification(NotificationData data) {
+        int notificationType = Integer.parseInt(data.notification_type);
+        if (notificationType == ApplicationMetadata.NOTIFICATION_MECH_FINISHED) {
+            //
+            presenter.mechanicFinishedTask(data);
+        }
+    }
 }

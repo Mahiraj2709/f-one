@@ -198,7 +198,7 @@ public class DialogFactory {
         alertDialog.show();
     }
 
-    public static void createRequestAcceptedDialog(Context context, String message) {
+    public static void createAlertDialog(Context context, String message) {
 
         final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
         alertDialog.setCanceledOnTouchOutside(false);

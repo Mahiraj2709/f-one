@@ -111,10 +111,16 @@ public class HomePresenterImp implements HomePresenter, LocationListener, Google
             if (allMechanic != null) {
                 view.showAcceptedMechanics(allMechanic);
 //                view.showAcceptedMechanics(testData());
+                //start timer for accept
+                view.showTimer(2);
+                sentReqeustWaitTime = 120;
+                setTimerForSendRequest();
             } else {
                 Toast.makeText(context, "All request accepted mech is null", Toast.LENGTH_SHORT).show();
             }
         }
+
+
         Log.i(TAG, "outside");
     }
 
@@ -423,7 +429,7 @@ public class HomePresenterImp implements HomePresenter, LocationListener, Google
     @Override
     public void requestSentSeccessfull(int time) {
         //request has been send and update time
-        Toast.makeText(context, "Start time for 3 minutes", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, "Start time for 3 minutes", Toast.LENGTH_SHORT).show();
         view.showTimer(time);
         view.disableSendRequest();
         sentReqeustWaitTime = time;
@@ -441,9 +447,13 @@ public class HomePresenterImp implements HomePresenter, LocationListener, Google
                     view.hideSentRequestTime();
                     view.enableSendRequest();
                     sendRequstTime.cancel();
+
+                    //on timer chance load all nearby mechanic again
+                    mapType = ApplicationMetadata.SHOW_ALL_MECH;
+                    getOnlineMechanics();
                 }
             }
-        }, 0, 2 * 1000);
+        }, 0, 1000);
     }
 }
 

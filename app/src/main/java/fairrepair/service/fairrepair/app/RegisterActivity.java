@@ -120,8 +120,11 @@ public class RegisterActivity extends BaseActivity {
             requestmap.put("email", RequestBody.create(MediaType.parse("text/plain"), getString(et_emailId)));
             requestmap.put("phone_no", RequestBody.create(MediaType.parse("text/plain"), getString(et_phoneNo)));
             requestmap.put("password", RequestBody.create(MediaType.parse("text/plain"), getString(et_password)));
-            requestmap.put("latitude", RequestBody.create(MediaType.parse("text/plain"), "3.3"));
-            requestmap.put("longitude", RequestBody.create(MediaType.parse("text/plain"), "22"));
+            if (super.currentLocatoin == null) {
+                DialogFactory.createAlertDialog(this,"Request address..");
+            }
+            requestmap.put("latitude", RequestBody.create(MediaType.parse("text/plain"), super.currentLocatoin.getLatitude() +""));
+            requestmap.put("longitude", RequestBody.create(MediaType.parse("text/plain"), super.currentLocatoin.getLongitude() +""));
             requestmap.put("device_token", RequestBody.create(MediaType.parse("text/plain"), (new PrefsHelper(this).getPref(ApplicationMetadata.DEVICE_TOKEN) != null) ? (String) new PrefsHelper(this).getPref(ApplicationMetadata.DEVICE_TOKEN) : ""));
             requestmap.put("device_id", RequestBody.create(MediaType.parse("text/plain"), CommonMethods.getDeviceId(this)));
             requestmap.put("device_type", RequestBody.create(MediaType.parse("text/plain"), "1"));

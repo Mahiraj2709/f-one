@@ -64,19 +64,19 @@ public class CancelRequestDialogFragment extends DialogFragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rb_mechLate:
-                        message = getString(R.string.rb_mech_reach_late);
+                        message = "1";
                         break;
                     case R.id.rb_noContact:
-                        message = getString(R.string.rb_mech_no_contact);
+                        message = "2";
                         break;
                     case R.id.rb_mechReqCancel:
-                        message = getString(R.string.rb_mech_request_cancel);
+                        message = "3";
                         break;
                     case R.id.rb_mechChangeMinc :
-                        message = getString(R.string.rb_mech_change_mind);
+                        message = "4";
                         break;
                     case R.id.rb_other:
-                        message = getString(R.string.rb_other);
+                        message = "5";
                         break;
                 }
             }

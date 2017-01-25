@@ -61,11 +61,11 @@ public class CompanyInformationFragment extends Fragment {
     private String mechId;
     private MechanicDetail mechanicDetail = null;
     private AllMechanic.Mechanic mechanic = null;
-    public static CompanyInformationFragment newInstance(String args, AllMechanic.Mechanic mechanic,String request_id) {
+    public static CompanyInformationFragment newInstance(String appProviderId, AllMechanic.Mechanic mechanic,String request_id) {
         CompanyInformationFragment fragment = new CompanyInformationFragment();
         Bundle data = new Bundle();
-        data.putString("args",args);
-        data.putString("request_id",request_id);
+        data.putString(ApplicationMetadata.APP_PROVIDER_ID,appProviderId);
+        data.putString(ApplicationMetadata.REQUEST_ID,request_id);
         data.putSerializable("mechanic",mechanic);
         fragment.setArguments(data);
         return fragment;
@@ -87,8 +87,8 @@ public class CompanyInformationFragment extends Fragment {
         Map<String, String> requestParams = new HashMap<>();
         requestParams.put(ApplicationMetadata.SESSION_TOKEN, prefsHelper.getPref(ApplicationMetadata.SESSION_TOKEN, ""));
         requestParams.put(ApplicationMetadata.LANGUAGE, prefsHelper.getPref(ApplicationMetadata.APP_LANGUAGE, ""));
-        requestParams.put(ApplicationMetadata.APP_PROVIDER_ID, mechId); // MECH ID
-        requestParams.put(ApplicationMetadata.REQUEST_ID, prefsHelper.getPref(ApplicationMetadata.USER_ID,"")); // CUSTOMER ID
+        requestParams.put(ApplicationMetadata.APP_PROVIDER_ID, getArguments().getString(ApplicationMetadata.APP_PROVIDER_ID)); // MECH ID
+        requestParams.put(ApplicationMetadata.REQUEST_ID, getArguments().getString(ApplicationMetadata.REQUEST_ID));
 
         if (Globals.getUserLatLng() == null) {
             return;
@@ -154,8 +154,8 @@ public class CompanyInformationFragment extends Fragment {
         Map<String, String> requestParams = new HashMap<>();
         requestParams.put(ApplicationMetadata.SESSION_TOKEN, prefsHelper.getPref(ApplicationMetadata.SESSION_TOKEN, ""));
         requestParams.put(ApplicationMetadata.LANGUAGE, prefsHelper.getPref(ApplicationMetadata.APP_LANGUAGE, ""));
-        requestParams.put(ApplicationMetadata.APP_PROVIDER_ID, mechId); // MECH ID
-        requestParams.put(ApplicationMetadata.REQUEST_ID, getArguments().getString("request_id")); // CUSTOMER ID
+        requestParams.put(ApplicationMetadata.APP_PROVIDER_ID, getArguments().getString(ApplicationMetadata.APP_PROVIDER_ID)); // MECH ID
+        requestParams.put(ApplicationMetadata.REQUEST_ID, getArguments().getString(ApplicationMetadata.REQUEST_ID)); // CUSTOMER ID
         requestParams.put(ApplicationMetadata.OFFER_PRICE, mechanic.offer_price);
         if (Globals.getUserLatLng() == null) {
             return;
@@ -166,7 +166,11 @@ public class CompanyInformationFragment extends Fragment {
         dataManager.setCallback(new DataManager.RequestCallback() {
             @Override
             public void Data(Object data) {
-                Fragment fragment = MechOnTheWayFragment.newInstance(0,mechanicDetail);
+
+                Bundle bundle = new Bundle();
+                bundle.putString(ApplicationMetadata.REQUEST_ID,getArguments().getString(ApplicationMetadata.REQUEST_ID));
+                bundle.putString(ApplicationMetadata.APP_PROVIDER_ID,getArguments().getString(ApplicationMetadata.APP_PROVIDER_ID));
+                Fragment fragment = MechOnTheWayFragment.newInstance(0,mechanicDetail,bundle);
                 ((MainActivity)getActivity()).addFragmentToStack(fragment,"mech_on_way");
             }
         });

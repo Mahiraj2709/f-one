@@ -43,9 +43,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.squareup.otto.Subscribe;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,8 +61,6 @@ import fairrepair.service.fairrepair.utils.ApplicationMetadata;
 import fairrepair.service.fairrepair.utils.DialogFactory;
 import fairrepair.service.fairrepair.utils.LocationUtils;
 
-import static android.R.attr.type;
-import static android.R.id.message;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
@@ -139,6 +134,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
     /* map is already there, just return view as it is */
         }
         ButterKnife.bind(this, view);
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
 
         donut_progress.setUnfinishedStrokeColor(getResources().getColor(R.color.colorPrimary));
@@ -147,7 +143,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
         donut_progress.setFinishedStrokeWidth(10.0f);
         donut_progress.setTextColor(getResources().getColor(R.color.lightGrey));
         tv_totalTime.setText("60");
-
         rv_servicesView.setLayoutManager(mLayoutManager);
         rv_servicesView.setItemAnimator(new DefaultItemAnimator());
         presenter = new HomePresenterImp(this, this, getContext());
@@ -156,6 +151,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
 
     @OnClick(R.id.ll_searchLocation)
     public void launchSearchLocation() {
@@ -377,12 +377,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
         LocationUtils locationUtils = new LocationUtils(getActivity());
         locationUtils.showSettingDialog();
 
-        receiveNotification(testAcceptedUser());
+        //receiveNotification(testAcceptedUser());
         String notificationData = getActivity().getIntent().getStringExtra(ApplicationMetadata.NOTIFICATION_DATA);
         int notificationType = getActivity().getIntent().getIntExtra(ApplicationMetadata.NOTIFICATION_TYPE, -1);
         if (notificationData != null && notificationType == ApplicationMetadata.NOTIFICATION_REQ_ACCEPTED) {
             presenter.setRequestAcceptedMech(new Gson().fromJson(notificationData, AllMechanic.class));
             mapType = ApplicationMetadata.SHOW_MECH_REQUEST;
+            //setMapType(mapType);
         } else {
 
         }
@@ -502,9 +503,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
 
     @Override
     public void showTimer(int time) {
-        ObjectAnimator anim = ObjectAnimator.ofInt(donut_progress, "progress", 0, time);
+        ObjectAnimator anim = ObjectAnimator.ofInt(donut_progress, "progress",time * 60);
         anim.setInterpolator(new DecelerateInterpolator());
-        anim.setDuration(time * 1000);
+        anim.setDuration(time * 60 * 1000);
         anim.start();
         ll_searchLocation.setVisibility(View.GONE);
         circleProgress.setVisibility(View.VISIBLE);
@@ -550,7 +551,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
 
     @Override
     public void enableSendRequest() {
-        tv_sendRequest.setVisibility(View.VISIBLE);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tv_sendRequest.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
@@ -567,10 +573,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
     @Subscribe
     public void receiveNotification(AllMechanic allMechanic) {
         //request has been accepted
-        DialogFactory.createRequestAcceptedDialog(getContext(), allMechanic.message);
+        DialogFactory.createAlertDialog(getContext(), allMechanic.message);
         presenter.setRequestAcceptedMech(allMechanic);
-        mapType = ApplicationMetadata.SHOW_MECH_REQUEST;
-        //presenter.setMapType(mapType);
+        mapType = ApplicationMetadata.SHOW_MECH_REQUEST;/**/
+        presenter.setMapType(mapType);
     }
 
     private AllMechanic testAcceptedUser() {

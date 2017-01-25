@@ -16,6 +16,7 @@ import fairrepair.service.fairrepair.FairRepairApplication;
 import fairrepair.service.fairrepair.R;
 import fairrepair.service.fairrepair.app.MainActivity;
 import fairrepair.service.fairrepair.model.AllMechanic;
+import fairrepair.service.fairrepair.model.NotificationData;
 import fairrepair.service.fairrepair.utils.ApplicationMetadata;
 import fairrepair.service.fairrepair.utils.NotificationUtils;
 
@@ -59,6 +60,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         if (notificationType == ApplicationMetadata.NOTIFICATION_REQ_ACCEPTED) {
                             AllMechanic allMechanic = new Gson().fromJson(payLoad, AllMechanic.class);
                             FairRepairApplication.getBus().post(allMechanic);
+                        } else if (notificationType == ApplicationMetadata.NOTIFICATION_MECH_FINISHED) {
+                            NotificationData notificationData = new Gson().fromJson(payLoad,NotificationData.class);
+                            FairRepairApplication.getBus().post(notificationData);
                         }
                     }
                 });

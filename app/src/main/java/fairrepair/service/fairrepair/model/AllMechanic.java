@@ -9,7 +9,7 @@ import java.util.List;
  * Created by admin on 12/29/2016.
  */
 
-public class AllMechanic {
+public class AllMechanic implements Serializable{
 
     @SerializedName("mechanic")
     public List<Mechanic>  mechanicList;

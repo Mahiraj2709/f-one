@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:clickable="true"
+    android:background="@android:color/white"
     android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -31,7 +33,7 @@
                     android:id="@+id/tv_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="6 mi \naway" />
+                    android:text="" />
             </LinearLayout>
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -39,7 +41,6 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_centerHorizontal="true"
-                android:src="@color/colorPrimaryDark"
                 app:civ_border_color="@android:color/transparent"
                 app:civ_border_width="4dp" />
 
@@ -51,7 +52,6 @@
 
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center_horizontal"
-                android:text="BROTHERS TOWING"
                 android:textSize="28sp" />
 
             <RatingBar
@@ -133,16 +133,13 @@
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                     android:textColor="@android:color/white" />
             </LinearLayout>
-
             <TextView
                 android:id="@+id/tv_offerPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="Offer price: $49"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 android:textColor="@android:color/white" />
-
             <Button
                 android:id="@+id/btn_acceptOffer"
                 android:layout_width="match_parent"

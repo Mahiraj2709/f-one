@@ -28,6 +28,7 @@ import fairrepair.service.fairrepair.data.DataManager;
 import fairrepair.service.fairrepair.data.local.PrefsHelper;
 import fairrepair.service.fairrepair.fragment.ResetPasswordFragment;
 import fairrepair.service.fairrepair.fragment.home_fragment.HomeFragment;
+import fairrepair.service.fairrepair.model.NotificationData;
 import fairrepair.service.fairrepair.utils.ApplicationMetadata;
 import fairrepair.service.fairrepair.utils.DialogFactory;
 import fairrepair.service.fairrepair.utils.ViewUtil;
@@ -89,7 +90,7 @@ public class MainActivity extends BaseActivity
                 .into(image_profile);
     }
 
-    private Fragment lastFragment = null;
+//    private Fragment lastFragment = null;
 
     @SuppressWarnings("ResourceType")
     public void addFragmentToStack(Fragment fragment, String tag) {
@@ -100,13 +101,15 @@ public class MainActivity extends BaseActivity
         // Add the fragment to the activity, pushing this transaction
         // on to the back stack.
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+/*
         if (lastFragment != null)
             transaction.remove(lastFragment);
-        transaction.replace(R.id.fl_container, fragment, tag);
+*/
+        transaction.add(R.id.fl_container, fragment, tag);
         transaction.addToBackStack(null);
         transaction.commit();
 
-        lastFragment = fragment;
+//        lastFragment = fragment;
     }
 
     @Override
@@ -228,11 +231,16 @@ public class MainActivity extends BaseActivity
             if (paylaodJson.has("type")) {
                 if (paylaodJson.getString("type").equals(ApplicationMetadata.NOTIFICATION_REQ_ACCEPTED)) {
                     //request has been accepted by the user
-                    DialogFactory.createRequestAcceptedDialog(MainActivity.this,paylaodJson.getString("message"));
+                    DialogFactory.createAlertDialog(MainActivity.this,paylaodJson.getString("message"));
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }*/
+    }
+
+    @Subscribe
+    public void getNotication(NotificationData data) {
+
     }
 }

@@ -71,8 +71,11 @@ public class LoginActivity extends BaseActivity {
             loginDetails.put("device_type", "1");
             loginDetails.put("device_token",(new PrefsHelper(this).getPref(ApplicationMetadata.DEVICE_TOKEN) != null)?(String)new PrefsHelper(this).getPref(ApplicationMetadata.DEVICE_TOKEN):"");
             loginDetails.put("device_id",CommonMethods.getDeviceId(this));
-            loginDetails.put("latitude","1.1");
-            loginDetails.put("longitude","1.1");
+            if (super.currentLocatoin == null) {
+                DialogFactory.createAlertDialog(this,"Request address..");
+            }
+            loginDetails.put("latitude", super.currentLocatoin.getLatitude() +"");
+            loginDetails.put("longitude", super.currentLocatoin.getLongitude() +"");
             loginDetails.put("language", ApplicationMetadata.LANG_ENGLISH);
 
             DataManager dataManager = new DataManager(this);

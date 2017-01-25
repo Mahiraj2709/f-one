@@ -37,6 +37,7 @@ import fairrepair.service.fairrepair.data.DataManager;
 import fairrepair.service.fairrepair.data.local.PrefsHelper;
 import fairrepair.service.fairrepair.data.model.MechanicDetail;
 import fairrepair.service.fairrepair.fragment.home_fragment.HomeFragment;
+import fairrepair.service.fairrepair.model.NotificationData;
 import fairrepair.service.fairrepair.utils.ApplicationMetadata;
 
 
@@ -61,6 +62,7 @@ public class MapPresenterImp implements MapPresenter, com.google.android.gms.loc
     private String[] permissions = {Manifest.permission.CALL_PHONE};
     private PrefsHelper prefsHelper = null;
     private DataManager dataManager = null;
+    private Bundle data = null;
     Map<String,String> locationRequest = new HashMap<>();
     private LatLng mLatLng = null;
     private Timer timer = new Timer();
@@ -232,8 +234,8 @@ public class MapPresenterImp implements MapPresenter, com.google.android.gms.loc
         Map<String, String> requestParams = new HashMap<>();
         requestParams.put(ApplicationMetadata.SESSION_TOKEN, prefsHelper.getPref(ApplicationMetadata.SESSION_TOKEN, ""));
         requestParams.put(ApplicationMetadata.LANGUAGE, prefsHelper.getPref(ApplicationMetadata.APP_LANGUAGE, ""));
-        requestParams.put(ApplicationMetadata.APP_PROVIDER_ID, mechanicDetail.getId()); // MECH ID
-        requestParams.put(ApplicationMetadata.REQUEST_ID, "7"); // CUSTOMER ID
+        requestParams.put(ApplicationMetadata.APP_PROVIDER_ID, data.getString(ApplicationMetadata.APP_PROVIDER_ID)); // MECH ID
+        requestParams.put(ApplicationMetadata.REQUEST_ID, data.getString(ApplicationMetadata.REQUEST_ID));
         requestParams.put(ApplicationMetadata.REASON_FOR_CANCEL, message);
         dataManager.setCallback(new DataManager.RequestCallback() {
             @Override
@@ -280,6 +282,22 @@ public class MapPresenterImp implements MapPresenter, com.google.android.gms.loc
         }, 0, 2 * 60  * 1000);
 
 //        }, 0, 5 * 60 * 1000);
+    }
+
+    @Override
+    public void mechanicFinishedTask(NotificationData data) {
+        //mechanic has finished work
+
+    }
+
+    @Override
+    public void mechanicArrived(NotificationData data) {
+
+    }
+
+    @Override
+    public void setBundleData(Bundle mech_data) {
+        this.data = mech_data;
     }
 }
 
