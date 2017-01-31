@@ -16,7 +16,9 @@ import android.widget.TextView;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +27,11 @@ import fairrepair.service.fairrepair.FairRepairApplication;
 import fairrepair.service.fairrepair.R;
 import fairrepair.service.fairrepair.adapter.ServiceHistoryAdapter;
 import fairrepair.service.fairrepair.app.MainActivity;
+import fairrepair.service.fairrepair.data.DataManager;
+import fairrepair.service.fairrepair.data.local.PrefsHelper;
 import fairrepair.service.fairrepair.model.ServiceHisrotyResponse;
+import fairrepair.service.fairrepair.utils.ApplicationMetadata;
+import fairrepair.service.fairrepair.utils.DateUtil;
 
 /**
  * Created by admin on 11/22/2016.
@@ -38,6 +44,9 @@ public class ServiceHistoryFragment extends Fragment {
     @BindView(R.id.rv_servicesView) RecyclerView rv_servicesView;
     private ServiceHistoryAdapter mServiceAdapter;
     private List<ServiceHisrotyResponse.ServiceHistory> mServiceList;
+    private PrefsHelper prefsHelper = null;
+    private DataManager dataManager = null;
+
     public static ServiceHistoryFragment newInstance(int args) {
         ServiceHistoryFragment fragment = new ServiceHistoryFragment();
         Bundle data = new Bundle();
@@ -51,6 +60,27 @@ public class ServiceHistoryFragment extends Fragment {
         super.onAttach(context);
         activity = (MainActivity) (getActivity());
         ((TextView)((MainActivity) getActivity()).findViewById(R.id.tv_toolbarHeader)).setText(getString(R.string.title_service_history));
+        prefsHelper = new PrefsHelper(getContext());
+        dataManager = new DataManager(getContext());
+        //make request
+        getAllSercviceHistory();
+    }
+
+    private void getAllSercviceHistory() {
+//make payment
+        Map<String, String> requestParams = new HashMap<>();
+        requestParams.put(ApplicationMetadata.SESSION_TOKEN, prefsHelper.getPref(ApplicationMetadata.SESSION_TOKEN,""));
+        requestParams.put(ApplicationMetadata.LANGUAGE, prefsHelper.getPref(ApplicationMetadata.APP_LANGUAGE, ""));
+        requestParams.put(ApplicationMetadata.FROM_DATE,DateUtil.getCurrentDate() ); // MECH ID
+        requestParams.put(ApplicationMetadata.TO_DATE, DateUtil.getCurrentDate());
+        dataManager.setCallback(new DataManager.RequestCallback() {
+            @Override
+            public void Data(Object data) {
+                //all service history
+            }
+        });
+
+        dataManager.allrequesthistory(requestParams);
     }
 
     @Nullable

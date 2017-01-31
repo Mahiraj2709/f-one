@@ -30,15 +30,20 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import fairrepair.service.fairrepair.FairRepairApplication;
 import fairrepair.service.fairrepair.Globals;
 import fairrepair.service.fairrepair.app.BaseActivity;
 import fairrepair.service.fairrepair.app.MainActivity;
 import fairrepair.service.fairrepair.data.DataManager;
 import fairrepair.service.fairrepair.data.local.PrefsHelper;
 import fairrepair.service.fairrepair.data.model.MechanicDetail;
+import fairrepair.service.fairrepair.fragment.YourBillFragment;
 import fairrepair.service.fairrepair.fragment.home_fragment.HomeFragment;
 import fairrepair.service.fairrepair.model.NotificationData;
 import fairrepair.service.fairrepair.utils.ApplicationMetadata;
+import fairrepair.service.fairrepair.utils.DialogFactory;
+
+import static android.R.attr.fragment;
 
 
 /**
@@ -287,12 +292,26 @@ public class MapPresenterImp implements MapPresenter, com.google.android.gms.loc
     @Override
     public void mechanicFinishedTask(NotificationData data) {
         //mechanic has finished work
+        DialogFactory.createAlertDialog(context,data.message);
+        this.data.putString(ApplicationMetadata.BILLING_PRICE,data.billing_price);
+        this.data.putString(ApplicationMetadata.SERVICE_PERCENTAGE,data.service_percentage);
+        this.data.putString(ApplicationMetadata.SERVICE_CHARGE,data.service_charge);
+        this.data.putString(ApplicationMetadata.SERVICE_DETAIL,data.service_detail);
+        this.data.putString(ApplicationMetadata.USER_IMAGE,data.provider_profile_pic);
+
+        Fragment fragment = YourBillFragment.newInstance(this.data);
+        ((MainActivity)activity).addFragmentToStack(fragment,"your_bill");
+        /*Message data payload: {request_status=1, notification_type=5, billing_price=25.00,
+                service_percentage=10, type=2, request_id=30, message=Complete billing send by Mahiraj, service_charge=2.50, service_detail=fhfh}*/
 
     }
 
     @Override
     public void mechanicArrived(NotificationData data) {
-
+        //mech has arrived now disable cancel
+        view.mechArrived(data);
+        //cancel timer task
+        timer.cancel();
     }
 
     @Override

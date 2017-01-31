@@ -27,6 +27,7 @@ import fairrepair.service.fairrepair.R;
 import fairrepair.service.fairrepair.data.DataManager;
 import fairrepair.service.fairrepair.data.local.PrefsHelper;
 import fairrepair.service.fairrepair.fragment.ResetPasswordFragment;
+import fairrepair.service.fairrepair.fragment.ServiceHistoryFragment;
 import fairrepair.service.fairrepair.fragment.home_fragment.HomeFragment;
 import fairrepair.service.fairrepair.model.NotificationData;
 import fairrepair.service.fairrepair.utils.ApplicationMetadata;
@@ -181,9 +182,8 @@ public class MainActivity extends BaseActivity
             DataManager dataManager = new DataManager(this);
             dataManager.getProfile(requestParams);
         } else if (id == R.id.nav_serviceHistory) {
-            DialogFactory.createComingSoonDialog(this);
-            /*Fragment newFragment = ServiceHistoryFragment.newInstance(3);
-            addFragmentToStack(newFragment,"service_history");*/
+            Fragment newFragment = ServiceHistoryFragment.newInstance(3);
+            addFragmentToStack(newFragment,"service_history");
         } else if (id == R.id.nav_resetPassword) {
             //DialogFactory.createComingSoonDialog(this);
             Fragment newFragment = ResetPasswordFragment.newInstance(4);

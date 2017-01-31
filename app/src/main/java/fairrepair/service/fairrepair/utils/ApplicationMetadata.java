@@ -63,5 +63,16 @@ public interface ApplicationMetadata {
     int NOTIFICATION_REQ_COMPLETED = 5;
     String NOTIFICATION_TYPE = "notification_type";
     String CUSTOMER_ID = "customer_id";
-    int NOTIFICATION_MECH_FINISHED = 7;
+    int NOTIFICATION_MECH_ARRIVED = 7;
+    int NOTIFICATION_REQ_FINISHED = 5;
+    String BILLING_PRICE = "billing_price";
+    String SERVICE_PERCENTAGE = "service_percentage";
+    String SERVICE_CHARGE = "service_charge";
+    String SERVICE_DETAIL = "service_detail";
+    String PAYMENT_STATUS = "payment_status";
+    String TXN_NO = "txn_no";
+    String REVIEW = "review";
+    String RATE = "rate";
+    String FROM_DATE = "from_date";
+    String TO_DATE = "to_date";
 }

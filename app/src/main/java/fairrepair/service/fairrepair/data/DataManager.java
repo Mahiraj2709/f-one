@@ -684,4 +684,138 @@ public class DataManager {
             }
         });
     }
+
+    // make payment
+    public void makePayment(Map<String, String> requestMap) {
+        if (!NetworkUtil.isNetworkConnected(mContext)) {
+            DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.no_connectin).show();
+            return;
+        }
+        final ProgressDialog progressDialog = new ProgressDialog(mContext);
+        progressDialog.setMessage(mContext.getString(R.string.msg_loading));
+        progressDialog.show();
+        Call<SignInResponse> call = mApiService.makePayment(requestMap);
+        call.enqueue(new Callback<SignInResponse>() {
+            @Override
+            public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
+                int status = response.body().getResponseStatus();
+                if (status == ApplicationMetadata.SUCCESS_RESPONSE_STATUS) {
+                    mCallback.Data(new Object());
+                } else {
+                    progressDialog.dismiss();
+                    DialogFactory.createSimpleOkErrorDialog(mContext, response.body().getResponseMsg()).show();
+                }
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<SignInResponse> call, Throwable t) {
+                // Log error here since request failed
+                progressDialog.dismiss();
+                Log.e(TAG, t.toString());
+                DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.msg_server_error).show();
+            }
+        });
+    }
+
+
+    // rate mechanic
+    public void addReview(Map<String, String> requestMap) {
+        if (!NetworkUtil.isNetworkConnected(mContext)) {
+            DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.no_connectin).show();
+            return;
+        }
+        final ProgressDialog progressDialog = new ProgressDialog(mContext);
+        progressDialog.setMessage(mContext.getString(R.string.msg_loading));
+        progressDialog.show();
+        Call<SignInResponse> call = mApiService.addreview(requestMap);
+        call.enqueue(new Callback<SignInResponse>() {
+            @Override
+            public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
+                int status = response.body().getResponseStatus();
+                if (status == ApplicationMetadata.SUCCESS_RESPONSE_STATUS) {
+                    //mCallback.Data(new Object());
+                    DialogFactory.createSimpleOkSuccessDialog(mContext,R.string.title_success, response.body().getResponseMsg()).show();
+                } else {
+                    progressDialog.dismiss();
+                    DialogFactory.createSimpleOkErrorDialog(mContext, response.body().getResponseMsg()).show();
+                }
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<SignInResponse> call, Throwable t) {
+                // Log error here since request failed
+                progressDialog.dismiss();
+                Log.e(TAG, t.toString());
+                DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.msg_server_error).show();
+            }
+        });
+    }
+    // allrequesthistory
+    public void allrequesthistory(Map<String, String> requestMap) {
+        if (!NetworkUtil.isNetworkConnected(mContext)) {
+            DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.no_connectin).show();
+            return;
+        }
+        final ProgressDialog progressDialog = new ProgressDialog(mContext);
+        progressDialog.setMessage(mContext.getString(R.string.msg_loading));
+        progressDialog.show();
+        Call<SignInResponse> call = mApiService.allrequesthistory(requestMap);
+        call.enqueue(new Callback<SignInResponse>() {
+            @Override
+            public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
+                int status = response.body().getResponseStatus();
+                if (status == ApplicationMetadata.SUCCESS_RESPONSE_STATUS) {
+                    mCallback.Data(new Object());
+//                    DialogFactory.createSimpleOkSuccessDialog(mContext,R.string.title_success, response.body().getResponseMsg()).show();
+                } else {
+                    progressDialog.dismiss();
+                    DialogFactory.createSimpleOkErrorDialog(mContext, response.body().getResponseMsg()).show();
+                }
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<SignInResponse> call, Throwable t) {
+                // Log error here since request failed
+                progressDialog.dismiss();
+                Log.e(TAG, t.toString());
+                DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.msg_server_error).show();
+            }
+        });
+    }
+    // gethistorydetailsbyrequestid
+    public void gethistorydetailsbyrequestid(Map<String, String> requestMap) {
+        if (!NetworkUtil.isNetworkConnected(mContext)) {
+            DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.no_connectin).show();
+            return;
+        }
+        final ProgressDialog progressDialog = new ProgressDialog(mContext);
+        progressDialog.setMessage(mContext.getString(R.string.msg_loading));
+        progressDialog.show();
+        Call<SignInResponse> call = mApiService.gethistorydetailsbyrequestid(requestMap);
+        call.enqueue(new Callback<SignInResponse>() {
+            @Override
+            public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
+                int status = response.body().getResponseStatus();
+                if (status == ApplicationMetadata.SUCCESS_RESPONSE_STATUS) {
+                    mCallback.Data(new Object());
+//                    DialogFactory.createSimpleOkSuccessDialog(mContext,R.string.title_success, response.body().getResponseMsg()).show();
+                } else {
+                    progressDialog.dismiss();
+                    DialogFactory.createSimpleOkErrorDialog(mContext, response.body().getResponseMsg()).show();
+                }
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<SignInResponse> call, Throwable t) {
+                // Log error here since request failed
+                progressDialog.dismiss();
+                Log.e(TAG, t.toString());
+                DialogFactory.createSimpleOkErrorDialog(mContext, R.string.title_attention, R.string.msg_server_error).show();
+            }
+        });
+    }
 }

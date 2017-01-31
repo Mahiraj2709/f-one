@@ -14,4 +14,13 @@ public class NotificationData {
     public String request_id;
     public String provider_profile_pic;
     public String message;
+
+    public String billing_price;
+    public String service_percentage;
+    public String service_charge;
+    public String service_detail;
+
+
+
+
 }

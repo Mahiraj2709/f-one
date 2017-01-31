@@ -72,7 +72,8 @@ public class LoginActivity extends BaseActivity {
             loginDetails.put("device_token",(new PrefsHelper(this).getPref(ApplicationMetadata.DEVICE_TOKEN) != null)?(String)new PrefsHelper(this).getPref(ApplicationMetadata.DEVICE_TOKEN):"");
             loginDetails.put("device_id",CommonMethods.getDeviceId(this));
             if (super.currentLocatoin == null) {
-                DialogFactory.createAlertDialog(this,"Request address..");
+                DialogFactory.createAlertDialog(this,"Getting address..");
+                return;
             }
             loginDetails.put("latitude", super.currentLocatoin.getLatitude() +"");
             loginDetails.put("longitude", super.currentLocatoin.getLongitude() +"");

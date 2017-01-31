@@ -96,6 +96,22 @@ public interface FairRepairService {
     @FormUrlEncoded
     Call<SignInResponse> updateLatLng(@FieldMap Map<String, String> requestMap);
 
+    @POST("paynow")
+    @FormUrlEncoded
+    Call<SignInResponse> makePayment(@FieldMap Map<String, String> requestMap);
+
+    @POST("addreview")
+    @FormUrlEncoded
+    Call<SignInResponse> addreview(@FieldMap Map<String, String> requestMap);
+
+    @POST("allrequesthistory")
+    @FormUrlEncoded
+    Call<SignInResponse> allrequesthistory(@FieldMap Map<String, String> requestMap);
+
+    @POST("gethistorydetailsbyrequestid")
+    @FormUrlEncoded
+    Call<SignInResponse> gethistorydetailsbyrequestid(@FieldMap Map<String, String> requestMap);
+
     /********
      * Factory class that sets up a new ribot services
      *******/

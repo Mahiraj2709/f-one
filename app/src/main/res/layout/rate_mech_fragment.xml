@@ -10,7 +10,6 @@
     android:layout_height="match_parent">
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image_profile"
-        android:src="@color/colorPrimaryDark"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
@@ -27,15 +26,14 @@
         android:typeface="sans"
         android:text="@string/tv_how_was_service"/>
     <RatingBar
-        android:id="@+id/rating_company"
+        android:id="@+id/rating_mech"
         style="?android:attr/accessibilityEventTypes"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:numStars="5"
         android:stepSize=".1"
         android:scaleX="0.8"
-        android:scaleY="0.8"
-        android:isIndicator="true" />
+        android:scaleY="0.8" />
 
     <TextView
         android:layout_width="match_parent"
@@ -55,15 +53,17 @@
         android:layout_margin="16dp"
         android:background="@color/colorDateSelector">
 
-        <TextView
+        <EditText
+            android:id="@+id/et_commentMechanic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:padding="16dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            android:text="@string/tv_share_experience"/>
+            android:textColorHint="@color/colorLineSeperator"
+            android:hint="@string/tv_share_experience"/>
         <Button
-            android:id="@+id/btn_acceptOffer"
+            android:id="@+id/btn_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"

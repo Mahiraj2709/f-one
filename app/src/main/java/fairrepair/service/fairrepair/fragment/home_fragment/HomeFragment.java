@@ -576,6 +576,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
         DialogFactory.createAlertDialog(getContext(), allMechanic.message);
         presenter.setRequestAcceptedMech(allMechanic);
         mapType = ApplicationMetadata.SHOW_MECH_REQUEST;/**/
+        //reomver comment after testin
         presenter.setMapType(mapType);
     }
 
@@ -583,7 +584,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, HomeVi
         AllMechanic allMechanic = new AllMechanic();
         allMechanic.total_offer = "1";
         allMechanic.type = "2";
-        allMechanic.request_id = "3";
+        allMechanic.request_id = "30";
         allMechanic.message = "We found 1 offers for your request";
 
         List<AllMechanic.Mechanic> mechanicList = new ArrayList<>();

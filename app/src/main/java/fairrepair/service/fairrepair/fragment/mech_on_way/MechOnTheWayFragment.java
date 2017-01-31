@@ -47,7 +47,11 @@ import fairrepair.service.fairrepair.data.model.MechanicDetail;
 import fairrepair.service.fairrepair.helper.DirectionsJSONParser;
 import fairrepair.service.fairrepair.model.NotificationData;
 import fairrepair.service.fairrepair.utils.ApplicationMetadata;
+import fairrepair.service.fairrepair.utils.DialogFactory;
 import fairrepair.service.fairrepair.utils.LocationUtils;
+
+import static android.R.attr.type;
+import static android.R.id.message;
 
 /**
  * Created by admin on 12/27/2016.
@@ -263,9 +267,21 @@ public class MechOnTheWayFragment extends Fragment implements OnMapReadyCallback
     @Subscribe
     public void getNotification(NotificationData data) {
         int notificationType = Integer.parseInt(data.notification_type);
-        if (notificationType == ApplicationMetadata.NOTIFICATION_MECH_FINISHED) {
-            //
+        if (notificationType == ApplicationMetadata.NOTIFICATION_MECH_ARRIVED) {
+            //presenter.mechanicFinishedTask(data);
+            presenter.mechanicArrived(data);
+        } else if (notificationType == ApplicationMetadata.NOTIFICATION_REQ_FINISHED) {
+            //mechanic has finished the work
             presenter.mechanicFinishedTask(data);
         }
+
+
+    }
+
+    @Override
+    public void mechArrived(NotificationData data) {
+        btn_cancelReq.setVisibility(View.GONE);
+        DialogFactory.createAlertDialog(getContext(),data.message);
+        ((TextView)((MainActivity) getActivity()).findViewById(R.id.tv_toolbarHeader)).setText(getString(R.string.title_mechanic_has_arrived));
     }
 }

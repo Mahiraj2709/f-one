@@ -46,8 +46,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
 
-        if (remoteMessage.getData().containsKey("type")) {
-            final int notificationType = Integer.parseInt(remoteMessage.getData().get("type"));
+        if (remoteMessage.getData().containsKey("notification_type")) {
+            final int notificationType = Integer.parseInt(remoteMessage.getData().get("notification_type"));
             payLoad = new NotificationUtils().getData(remoteMessage.getData());
             Intent intent = null;
 
@@ -60,7 +60,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         if (notificationType == ApplicationMetadata.NOTIFICATION_REQ_ACCEPTED) {
                             AllMechanic allMechanic = new Gson().fromJson(payLoad, AllMechanic.class);
                             FairRepairApplication.getBus().post(allMechanic);
-                        } else if (notificationType == ApplicationMetadata.NOTIFICATION_MECH_FINISHED) {
+                        } else if (notificationType == ApplicationMetadata.NOTIFICATION_MECH_ARRIVED) {
+                            NotificationData notificationData = new Gson().fromJson(payLoad,NotificationData.class);
+                            FairRepairApplication.getBus().post(notificationData);
+                        }else if (notificationType == ApplicationMetadata.NOTIFICATION_REQ_FINISHED) {
                             NotificationData notificationData = new Gson().fromJson(payLoad,NotificationData.class);
                             FairRepairApplication.getBus().post(notificationData);
                         }

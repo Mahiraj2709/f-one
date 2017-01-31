@@ -18,6 +18,12 @@ public class DateUtil {
                 calendar.get(Calendar.MONTH) == todayMonth &&
                 calendar.get(Calendar.DAY_OF_MONTH) == todayDay;
     }
+    public static String getPreviousWeekDate(){
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        return formatter.format(date);
+    }
+
     public static String getCurrentDate(){
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
